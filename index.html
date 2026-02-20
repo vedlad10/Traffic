@@ -10,68 +10,347 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
 
     <style>
-        .suggestions {
-            background: white;
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-        }
+        :root {
+    --primary: #f59e0b;        /* Amber */
+    --primary-dark: #d97706;
+    --bg: #0f1115;             /* Deep charcoal */
+    --panel: rgba(24, 24, 27, 0.9);
+    --border: rgba(255, 255, 255, 0.08);
+    --text: #f9fafb;
+    --muted: #9ca3af;
+}
 
-        .suggestion-item {
-            padding: 8px;
-            cursor: pointer;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", Arial, sans-serif;
+}
 
-        .suggestion-item:hover {
-            background: #f0f0f0;
-        }
+body {
+    display: flex;
+    height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+}
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial;
-        }
+/* ===== LEFT DASHBOARD ===== */
 
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-        }
+.dashboard {
+    width: 420px;
+    background: var(--panel);
+    backdrop-filter: blur(18px);
+    border-right: 1px solid var(--border);
+    padding: 28px;
+    overflow-y: auto;
+    box-shadow: 8px 0 40px rgba(0,0,0,0.4);
+}
 
-        .controls {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            z-index: 1;
-            width: 300px;
-        }
+.dashboard h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+}
 
-        input,
-        button {
-            width: 100%;
-            margin-top: 8px;
-            padding: 8px;
-        }
+.input-group {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.input-group svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    fill: var(--muted);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 14px 14px 42px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #1c1f26;
+    color: var(--text);
+    font-size: 14px;
+    transition: all 0.25s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+/* Buttons */
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.25s ease;
+    font-size: 14px;
+}
+
+button.primary {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #000;
+    box-shadow: 0 6px 20px rgba(245,158,11,0.3);
+}
+
+button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(245,158,11,0.5);
+}
+
+button.secondary {
+    background: #1f232b;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+button.secondary:hover {
+    background: #262b34;
+}
+
+/* Suggestions */
+
+.suggestions {
+    background: #1c1f26;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 100;
+}
+
+.suggestion-item {
+    padding: 10px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.suggestion-item:hover {
+    background: rgba(245,158,11,0.15);
+}
+
+/* Route Cards */
+
+.route-card {
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 20px;
+    background: #1c1f26;
+    border: 1px solid var(--border);
+    transition: 0.3s;
+}
+
+.route-card.blue {
+    border-left: 4px solid #3b82f6;
+}
+
+.route-card.green {
+    border-left: 4px solid var(--primary);
+    background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03));
+}
+
+.route-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.route-title {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.route-time {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.safety-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin-top: 6px;
+    background: rgba(245,158,11,0.15);
+    color: var(--primary);
+}
+
+/* Metrics */
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.metric-box {
+    background: #15181d;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 11px;
+    border: 1px solid var(--border);
+}
+
+.metric-box strong {
+    display: block;
+    font-size: 14px;
+    margin-top: 6px;
+    color: var(--primary);
+}
+
+/* Risk Panel */
+
+#risk-panel {
+    margin-top: 20px;
+    font-size: 12px;
+    background: #1c1f26;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+/* Map */
+
+.map-container {
+    flex: 1;
+    position: relative;
+}
+
+#map {
+    position: absolute;
+    inset: 0;
+}
+
+/* Legend */
+
+.legend {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(20,20,20,0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    font-size: 13px;
+    border: 1px solid var(--border);
+}
+
+.legend div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.blue { background: #3b82f6; }
+.green { background: var(--primary); }
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(20, 20, 20, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #f59e0b;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
+    z-index: 20;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 35px rgba(245,158,11,0.4);
+}
+
+.theme-toggle svg {
+    transition: transform 0.4s ease, opacity 0.3s ease;
+}
     </style>
 </head>
 
 <body>
 
-    <div id="map"></div>
+    <div class="dashboard">
+        <h2>Smart Risk-Aware Routing</h2>
 
-    <div class="controls">
-        <h3>Smart Routing</h3>
-        <input type="text" id="start" placeholder="Start location" autocomplete="off">
-        <div id="start-suggestions" class="suggestions"></div>
+        <div class="input-group">
+            <!-- Location Icon -->
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M12 2C8 2 5 5 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" />
+            </svg>
+            <input type="text" id="start" placeholder="Start location" autocomplete="off">
+            <div id="start-suggestions" class="suggestions"></div>
+            
+        </div>
 
-        <input type="text" id="end" placeholder="Destination" autocomplete="off">
-        <div id="end-suggestions" class="suggestions"></div>
-        <button onclick="getRoutes()">Find Routes</button>
-        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        <div class="input-group">
+            <!-- Destination Icon -->
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2L4 20l8-4 8 4z" />
+            </svg>
+            <input type="text" id="end" placeholder="Destination" autocomplete="off">
+            <div id="end-suggestions" class="suggestions"></div>
+        </div>
+
+        <button class="primary" onclick="getRoutes()">Find Routes</button>
+        <button class="secondary" onclick="toggleHeatmap()">Toggle Accident Heatmap</button>
+
+        <div id="route-cards"></div>
+
+        <div id="risk-panel"></div>
+    </div>
+
+    <div class="map-container">
+        <div id="map"></div>
+        <div class="theme-toggle" onclick="toggleDarkMode()">
+    <svg id="theme-icon" viewBox="0 0 24 24" width="20" height="20">
+        <!-- Moon by default -->
+        <path fill="currentColor"
+            d="M21 12.79A9 9 0 0111.21 3c0-.34.02-.67.05-1A9 9 0 1022 13.74a7 7 0 01-1-.95z" />
+    </svg>
+</div>
+        <div id="style-fade"></div>
+        <div class="legend">
+            <div><span class="dot blue"></span> Shortest Route</div>
+            <div><span class="dot green"></span> Safest Route</div>
+        </div>
     </div>
 
     <!-- Mapbox JS -->
@@ -124,6 +403,7 @@
         map.setBearing(-20);
         map.on('load', () => {
             add3DBuildings();
+            addHeatmapLayer();
         });
         map.easeTo({
             pitch: 60,
@@ -151,111 +431,201 @@
             });
         }
 
-       async function getRoutes() {
+        async function getRoutes() {
 
-    const startCoords = window.startCoords;
-    const endCoords = window.endCoords;
+            const startCoords = window.startCoords;
+            const endCoords = window.endCoords;
 
-    if (!startCoords || !endCoords) {
-        alert("Select both locations.");
-        return;
-    }
+            if (!startCoords || !endCoords) {
+                alert("Select both locations.");
+                return;
+            }
 
-    const routeRes = await fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/` +
-        `${startCoords[0]},${startCoords[1]};` +
-        `${endCoords[0]},${endCoords[1]}` +
-        `?alternatives=true&geometries=geojson&access_token=${mapboxgl.accessToken}`
-    );
+            const routeRes = await fetch(
+                `https://api.mapbox.com/directions/v5/mapbox/driving/` +
+                `${startCoords[0]},${startCoords[1]};` +
+                `${endCoords[0]},${endCoords[1]}` +
+                `?alternatives=true&geometries=geojson&access_token=${mapboxgl.accessToken}`
+            );
 
-    const routeData = await routeRes.json();
-    const routes = routeData.routes;
+            const routeData = await routeRes.json();
+            const routes = routeData.routes;
 
-    if (routes.length < 1) {
-        alert("No routes found.");
-        return;
-    }
+            if (!routes || routes.length === 0) {
+                alert("No routes found.");
+                return;
+            }
 
-    // Remove old layers
-    ["shortest", "safe"].forEach(id => {
-        if (map.getSource(id)) {
-            map.removeLayer(id);
-            map.removeSource(id);
+            // Remove old layers
+            ["shortest", "safe"].forEach(id => {
+
+                if (map.getLayer(id)) {
+                    map.removeLayer(id);
+                }
+
+                if (map.getSource(id)) {
+                    map.removeSource(id);
+                }
+
+            });
+
+            let risks = [];
+
+            // Evaluate each route properly
+            for (let i = 0; i < routes.length; i++) {
+
+                const riskRes = await fetch("http://127.0.0.1:8000/safe-route", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        coordinates: routes[i].geometry.coordinates
+                    })
+                });
+
+                const riskData = await riskRes.json();
+
+                risks.push({
+                    index: i,
+                    average_risk: riskData.average_risk,
+                    breakdown: riskData
+                });
+            }
+
+            // Sort by risk
+            risks.sort((a, b) => a.average_risk - b.average_risk);
+
+            const safest = risks[0];
+            const shortestIndex = 0;
+
+            const minRisk = Math.min(...risks.map(r => r.average_risk));
+            const maxRisk = Math.max(...risks.map(r => r.average_risk));
+            // ===== BUILD ROUTE CARDS =====
+            const routeCardsContainer = document.getElementById("route-cards");
+            routeCardsContainer.innerHTML = "";
+
+            // Build card function
+            function createRouteCard(routeIndex, colorClass, title, isSafest = false) {
+
+                const route = routes[routeIndex];
+                const breakdown = risks.find(r => r.index === routeIndex).breakdown;
+
+                const etaMinutes = Math.round(route.duration / 60);
+                const riskSpread = maxRisk - minRisk || 1;
+
+                const scaledRisk =
+                    (breakdown.average_risk - minRisk) / riskSpread;
+
+                // Smooth realistic scoring (no 0 or 100 extremes)
+                const safetyScore = Math.round(
+                    85 - (scaledRisk * 30)
+                );
+
+                const card = document.createElement("div");
+                card.className = `route-card ${colorClass}`;
+
+                card.innerHTML = `
+        <div class="route-header">
+            <div>
+                <div class="route-title">${title}</div>
+                ${isSafest ? '<div class="safety-badge badge-green">Safest Choice</div>' : ''}
+            </div>
+            <div class="route-time">${etaMinutes} min</div>
+        </div>
+
+        <div><strong>Safety Rating:</strong> ${safetyScore}/100</div>
+
+        <div class="metrics">
+            <div class="metric-box">
+                Lighting
+                <strong>${(100 - breakdown.night_risk * 100).toFixed(0)}%</strong>
+            </div>
+
+            <div class="metric-box">
+                Weather
+               <strong>${Math.max(0, 100 - breakdown.weather_risk * 200).toFixed(0)}%</strong>
+            </div>
+
+            <div class="metric-box">
+                Geometry
+                <strong>${Math.max(0, 100 - breakdown.geometry_risk * 250).toFixed(0)}%</strong>
+            </div>
+        </div>
+    `;
+
+                routeCardsContainer.appendChild(card);
+            }
+
+            // Create Shortest (Blue)
+            createRouteCard(shortestIndex, "blue", "Shortest Route");
+
+            // Create Safest (Green)
+            createRouteCard(safest.index, "green", "Recommended Route", true);
+
+            // Draw shortest route (Blue)
+            map.addSource("shortest", {
+                type: "geojson",
+                data: {
+                    type: "Feature",
+                    geometry: routes[shortestIndex].geometry
+                }
+            });
+
+            map.addLayer({
+                id: "shortest",
+                type: "line",
+                source: "shortest",
+                paint: {
+                    "line-color": "#007bff",
+                    "line-width": 6
+                }
+            });
+
+            // Draw safest route (Green)
+            map.addSource("safe", {
+                type: "geojson",
+                data: {
+                    type: "Feature",
+                    geometry: routes[safest.index].geometry
+                }
+            });
+
+            map.addLayer({
+                id: "safe",
+                type: "line",
+                source: "safe",
+                paint: {
+                    "line-color": "#00c853",
+                    "line-width": 6
+                }
+            });
+
+            // Show full breakdown for judges
+            const r = safest.breakdown;
+
+            document.getElementById("risk-panel").innerHTML = `
+    <b>Risk Breakdown (Safest Route)</b><br>
+    Overall Risk: ${r.average_risk.toFixed(3)}<br><br>
+
+    Historical ML Risk: ${r.historical_risk.toFixed(3)}<br>
+    Geometry Risk: ${r.geometry_risk.toFixed(3)}<br>
+    Night Risk: ${r.night_risk.toFixed(3)}<br><br>
+
+    Weather Risk: ${r.weather_risk.toFixed(3)}<br>
+    ├ Rain: ${r.rain_component.toFixed(3)}<br>
+    ├ Wind: ${r.wind_component.toFixed(3)}<br>
+    ├ Cloud: ${r.cloud_component.toFixed(3)}<br><br>
+
+    Visibility: ${r.visibility_meters.toFixed(0)} m<br>
+    Visibility Risk: ${r.visibility_risk.toFixed(3)}<br><br>
+
+    <i>${r.formula}</i>
+`;
+
+            // Fit map to route
+            const bounds = new mapboxgl.LngLatBounds();
+            routes[shortestIndex].geometry.coordinates.forEach(coord => bounds.extend(coord));
+            map.fitBounds(bounds, { padding: 50 });
         }
-    });
-
-    // Evaluate risk for each route
-    let risks = [];
-
-    for (let i = 0; i < routes.length; i++) {
-
-        const riskRes = await fetch("http://127.0.0.1:8000/safe-route", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                coordinates: routes[i].geometry.coordinates,
-                rain_intensity: 0.3,
-                visibility_score: 0.8
-            })
-        });
-
-        const riskData = await riskRes.json();
-        risks.push({
-            index: i,
-            risk: riskData.average_risk
-        });
-    }
-
-    // Sort by risk
-    risks.sort((a, b) => a.risk - b.risk);
-
-    const safestIndex = risks[0].index;
-    const shortestIndex = 0;
-
-    // Draw shortest (blue)
-    map.addSource("shortest", {
-        type: "geojson",
-        data: {
-            type: "Feature",
-            geometry: routes[shortestIndex].geometry
-        }
-    });
-
-    map.addLayer({
-        id: "shortest",
-        type: "line",
-        source: "shortest",
-        paint: {
-            "line-color": "#007bff",
-            "line-width": 6
-        }
-    });
-
-    // Draw safest (green)
-    map.addSource("safe", {
-        type: "geojson",
-        data: {
-            type: "Feature",
-            geometry: routes[safestIndex].geometry
-        }
-    });
-
-    map.addLayer({
-        id: "safe",
-        type: "line",
-        source: "safe",
-        paint: {
-            "line-color": "#00c853",
-            "line-width": 6
-        }
-    });
-
-    const bounds = new mapboxgl.LngLatBounds();
-    routes[shortestIndex].geometry.coordinates.forEach(coord => bounds.extend(coord));
-    map.fitBounds(bounds, { padding: 50 });
-
-    alert("Safest route risk score: " + risks[0].risk.toFixed(3));
-}
 
         // ✅ AUTOCOMPLETE FUNCTION (Allow Localities Like Vashi)
         async function fetchSuggestions(query, containerId, inputId) {
@@ -302,17 +672,125 @@
 
         let isDark = false;
 
-        function toggleDarkMode() {
-            if (isDark) {
-                map.setStyle('mapbox://styles/mapbox/streets-v12');
+        function addHeatmapLayer() {
+
+            fetch("heatmap-data.json")
+                .then(res => res.json())
+                .then(data => {
+
+                    const geojson = {
+                        type: "FeatureCollection",
+                        features: data.map(point => ({
+                            type: "Feature",
+                            properties: {
+                                intensity: point[2]
+                            },
+                            geometry: {
+                                type: "Point",
+                                coordinates: [point[1], point[0]]
+                            }
+                        }))
+                    };
+
+                    if (map.getSource("accidents")) {
+                        map.removeLayer("accident-heat");
+                        map.removeSource("accidents");
+                    }
+
+                    map.addSource("accidents", {
+                        type: "geojson",
+                        data: geojson
+                    });
+
+                    map.addLayer({
+                        id: "accident-heat",
+                        type: "heatmap",
+                        source: "accidents",
+                        maxzoom: 15,
+                        paint: {
+                            "heatmap-weight": [
+                                "interpolate",
+                                ["linear"],
+                                ["get", "intensity"],
+                                0, 0,
+                                0.01, 1
+                            ],
+                            "heatmap-intensity": 1.5,
+                            "heatmap-radius": 20,
+                            "heatmap-opacity": 0.6
+                        }
+                    });
+
+                });
+        }
+
+       function toggleDarkMode() {
+
+    const fade = document.getElementById("style-fade");
+    const icon = document.getElementById("theme-icon");
+
+    const center = map.getCenter();
+    const zoom = map.getZoom();
+    const pitch = map.getPitch();
+    const bearing = map.getBearing();
+
+    fade.style.opacity = 1;
+
+    setTimeout(() => {
+
+        if (isDark) {
+            map.setStyle('mapbox://styles/mapbox/streets-v12');
+
+            // Switch to Moon icon
+            icon.innerHTML = `
+                <path fill="currentColor"
+                d="M21 12.79A9 9 0 0111.21 3c0-.34.02-.67.05-1A9 9 0 1022 13.74a7 7 0 01-1-.95z"/>
+            `;
+
+        } else {
+            map.setStyle('mapbox://styles/mapbox/dark-v11');
+
+            // Switch to Sun icon
+            icon.innerHTML = `
+                <path fill="currentColor"
+                d="M6.76 4.84l-1.8-1.79-1.42 1.41 1.79 1.8 1.43-1.42zM1 13h3v-2H1v2zm10-9h2V1h-2v3zm7.66 2.05l1.79-1.8-1.41-1.41-1.8 1.79 1.42 1.42zM17 13h3v-2h-3v2zm-5 5h2v-3h-2v3zm-7.66-2.05l-1.79 1.8 1.41 1.41 1.8-1.79-1.42-1.42zM4 11H1v2h3v-2zm8 6a5 5 0 100-10 5 5 0 000 10z"/>
+            `;
+        }
+
+        isDark = !isDark;
+
+        map.once('style.load', () => {
+
+            map.easeTo({
+                center,
+                zoom,
+                pitch,
+                bearing
+            });
+
+            add3DBuildings();
+            addHeatmapLayer();
+
+            setTimeout(() => {
+                fade.style.opacity = 0;
+            }, 150);
+        });
+
+    }, 200);
+}
+        let heatVisible = true;
+
+        function toggleHeatmap() {
+
+            if (!map.getLayer("accident-heat")) return;
+
+            const visibility = map.getLayoutProperty("accident-heat", "visibility");
+
+            if (visibility === "none") {
+                map.setLayoutProperty("accident-heat", "visibility", "visible");
             } else {
-                map.setStyle('mapbox://styles/mapbox/dark-v11');
+                map.setLayoutProperty("accident-heat", "visibility", "none");
             }
-
-            isDark = !isDark;
-
-            // Re-add 3D buildings after style change
-            map.once('style.load', add3DBuildings);
         }
     </script>
 

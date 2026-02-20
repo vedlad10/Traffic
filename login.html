@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NHAI Mover/Driver Portal - Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#F59E0B", // Amber-500 from screenshot reference
+                        "primary-hover": "#D97706",
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#0F1115", // Very dark grey, almost black
+                        "surface-dark": "#18181B", // Slightly lighter for the card/form area
+                        "surface-light": "#FFFFFF",
+                        "text-light": "#1F2937",
+                        "text-dark": "#E5E7EB",
+                        "placeholder-dark": "#6B7280",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #F59E0B;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark min-h-screen flex items-center justify-center p-4 lg:p-8 transition-colors duration-300">
+    <div class="absolute top-4 right-4 z-50">
+        <button
+            class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white shadow-lg focus:outline-none"
+            onclick="document.documentElement.classList.toggle('dark')">
+            <span class="material-icons dark:hidden">dark_mode</span>
+            <span class="material-icons hidden dark:block">light_mode</span>
+        </button>
+    </div>
+    <div
+        class="w-full max-w-7xl bg-surface-light dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row h-[90vh] lg:h-[850px] border border-gray-200 dark:border-gray-800">
+        <div class="w-full lg:w-1/2 p-8 lg:p-12 xl:p-16 flex flex-col justify-center relative overflow-y-auto custom-scrollbar"
+            id="form-container">
+            <div class="absolute top-8 left-8 lg:left-12 flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                    N</div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-lg leading-tight dark:text-white">NHAI Portal</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">National Highways Authority of India</span>
+                </div>
+            </div>
+            <div class="flex space-x-6 mb-8 mt-12 border-b border-gray-200 dark:border-gray-700">
+                <button
+                    class="pb-3 text-lg font-semibold border-b-2 border-primary text-primary focus:outline-none transition-colors"
+                    id="tab-login" onclick="switchTab('login')">
+                    Login
+                </button>
+                <button
+                    class="pb-3 text-lg font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition-colors"
+                    id="tab-signup" onclick="switchTab('signup')">
+                    Register Vehicle
+                </button>
+            </div>
+            <div class="space-y-6 animate-fade-in" id="login-form">
+                <div class="mb-2">
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome Back, Driver</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Enter your credentials to access your dashboard.</p>
+                </div>
+                <form class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                            for="login-id">Mobile Number / Driver ID</label>
+                        <div class="relative">
+                            <span
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <span class="material-icons text-xl">badge</span>
+                            </span>
+                            <input
+                                class="block w-full pl-10 pr-3 py-3 rounded-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-primary focus:border-primary dark:focus:ring-primary dark:focus:border-primary sm:text-sm"
+                                id="login-id" placeholder="Enter ID or Mobile" type="text" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                            for="password">Password</label>
+                        <div class="relative">
+                            <span
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <span class="material-icons text-xl">lock</span>
+                            </span>
+                            <input
+                                class="block w-full pl-10 pr-10 py-3 rounded-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-primary focus:border-primary dark:focus:ring-primary dark:focus:border-primary sm:text-sm"
+                                id="password" placeholder="••••••••" type="password" />
+                            <button
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-300 focus:outline-none"
+                                type="button">
+                                <span class="material-icons text-xl">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                            for="otp">Mandatory OTP</label>
+                        <div class="flex gap-2">
+                            <div class="relative flex-grow">
+                                <span
+                                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                    <span class="material-icons text-xl">sms</span>
+                                </span>
+                                <input
+                                    class="block w-full pl-10 pr-3 py-3 rounded-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-primary focus:border-primary dark:focus:ring-primary dark:focus:border-primary sm:text-sm"
+                                    id="otp" placeholder="Enter 6-digit OTP" type="text" />
+                            </div>
+                            <button
+                                class="whitespace-nowrap px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                                type="button">
+                                Get OTP
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
+                                id="remember-me" name="remember-me" type="checkbox" />
+                            <label class="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+                                for="remember-me">Remember me</label>
+                        </div>
+                        <div class="text-sm">
+                            <a class="font-medium text-primary hover:text-primary-hover" href="#">Forgot password?</a>
+                        </div>
+                    </div>
+                    <button onclick="redirectToMap()"
+                        class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all transform hover:scale-[1.01]"
+                        type="button">
+                        Log In
+                    </button>
+                </form>
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        Facing issues? <a class="font-medium text-primary hover:text-primary-hover" href="#">Contact
+                            Support</a>
+                    </p>
+                </div>
+            </div>
+            <div class="hidden space-y-6 animate-fade-in" id="signup-form">
+                <div class="mb-2">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Mover Registration</h1>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Register your heavy vehicle for the national
+                        network.</p>
+                </div>
+                <form class="space-y-4">
+                    <div class="pb-2 border-b border-gray-200 dark:border-gray-700 mb-4">
+                        <h3
+                            class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                            Driver Details</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Driving
+                                    License No.</label>
+                                <input
+                                    class="block w-full rounded-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-primary focus:border-primary sm:text-sm p-2.5"
+                                    placeholder="DL Number" type="text" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State of
+                                    Issue</label>
+                                <select
+                                    class="block w-full rounded-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-primary focus:border-primary sm:text-sm p-2.5">
+                                    <option>Select State</option>
+                                    <option>Maharashtra</option>
+                                    <option>Delhi</option>
+                                    <option>Karnataka</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3
+                            class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                            Vehicle Details</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Vehicle
+                                    Type</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <label class="cursor-pointer">
+                                        <input class="peer sr-only" name="vehicle_type" type="radio" />
+                                        <div
+                                            class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-3 text-center hover:bg-gray-50 dark:hover:bg-gray-700 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary peer-checked:bg-primary/10 transition-all">
+                                            <span
+                                                class="material-icons block text-2xl mb-1 text-gray-500 dark:text-gray-400 peer-checked:text-primary">local_shipping</span>
+                                            <span class="text-xs font-medium dark:text-white">Truck</span>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input class="peer sr-only" name="vehicle_type" type="radio" />
+                                        <div
+                                            class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-3 text-center hover:bg-gray-50 dark:hover:bg-gray-700 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary peer-checked:bg-primary/10 transition-all">
+                                            <span
+                                                class="material-icons block text-2xl mb-1 text-gray-500 dark:text-gray-400 peer-checked:text-primary">rv_hookup</span>
+                                            <span class="text-xs font-medium dark:text-white">Trailer</span>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input class="peer sr-only" name="vehicle_type" type="radio" />
+                                        <div
+                                            class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-3 text-center hover:bg-gray-50 dark:hover:bg-gray-700 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary peer-checked:bg-primary/10 transition-all">
+                                            <span
+                                                class="material-icons block text-2xl mb-1 text-gray-500 dark:text-gray-400 peer-checked:text-primary">agriculture</span>
+                                            <span class="text-xs font-medium dark:text-white">Other</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Registration
+                                    No.</label>
+                                <input
+                                    class="block w-full rounded-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-primary focus:border-primary sm:text-sm p-2.5 uppercase"
+                                    placeholder="MH 02 AB 1234" type="text" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Weight
+                                    Category</label>
+                                <select
+                                    class="block w-full rounded-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-primary focus:border-primary sm:text-sm p-2.5">
+                                    <option>Select Weight</option>
+                                    <option>Light (&lt; 7.5T)</option>
+                                    <option>Medium (7.5T - 12T)</option>
+                                    <option>Heavy (&gt; 12T)</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">FASTag
+                                    ID</label>
+                                <div class="relative">
+                                    <span
+                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <span class="material-icons text-xl">qr_code</span>
+                                    </span>
+                                    <input
+                                        class="block w-full pl-10 pr-3 py-2.5 rounded-lg border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-primary focus:border-primary dark:focus:ring-primary dark:focus:border-primary sm:text-sm"
+                                        placeholder="Enter FASTag ID" type="text" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start mt-4">
+                        <div class="flex items-center h-5">
+                            <input
+                                class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
+                                id="terms" name="terms" type="checkbox" />
+                        </div>
+                        <div class="ml-2 text-sm">
+                            <label class="font-medium text-gray-700 dark:text-gray-300" for="terms">I agree to the <a
+                                    class="text-primary hover:underline" href="#">NHAI Terms</a> and <a
+                                    class="text-primary hover:underline" href="#">Safety Guidelines</a>.</label>
+                        </div>
+                    </div>
+                    <button onclick="redirectToMap()" w-full flex justify-center py-3 px-4 border border-transparent
+                        rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary-hover
+                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all mt-4"
+                        type="submit">
+                        Register Vehicle
+                    </button>
+                </form>
+            </div>
+            <div class="mt-auto pt-8 flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">
+                <span>© 2024 NHAI. All rights reserved.</span>
+                <div class="space-x-4">
+                    <a class="hover:text-gray-600 dark:hover:text-gray-300" href="#">Privacy</a>
+                    <a class="hover:text-gray-600 dark:hover:text-gray-300" href="#">Terms</a>
+                    <a class="hover:text-gray-600 dark:hover:text-gray-300" href="#">Help</a>
+                </div>
+            </div>
+        </div>
+        <div class="hidden lg:block w-1/2 relative bg-gray-900">
+            <div class="absolute inset-0">
+                <img alt="Aerial view of shipping containers and logistics hub"
+                    class="w-full h-full object-cover opacity-60"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqNCwqZcVI23uCSIPsPtP01_9QgbvcClebvLFUL4O4_VhMneGRm7E8dkUNM3xkEnnYWpnjdSSo76Lsd--Rh0OidG3QSthHglGzCCyoGMmXMLOVmD9b_rmdGoGP13gZ6CBey-4dfPgmNQmwjOOotekEsmqGQoZhkOk2alae7tPB-MnnADa73JFJQAkh54QJLiUrXbcsCj-3qjvSgb5Jf0efEAH-T9AxUHpvS83EREBNp2-bNq9m_B9XCBTOUu5yShlmfY2nhLhil9o" />
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-90">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-r from-background-dark/80 to-transparent"></div>
+            </div>
+            <div class="absolute bottom-0 left-0 p-12 w-full">
+                <div class="mb-8">
+                    <h2 class="text-4xl xl:text-5xl font-bold text-white mb-4 leading-tight">
+                        Discover the best <br /> <span class="text-primary">routes</span> today.
+                    </h2>
+                    <p class="text-gray-300 text-lg max-w-md">
+                        SafarBharat makes sure every ride is safe, selected and happy.
+                    </p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="bg-black/30 backdrop-blur-md border border-white/10 rounded-lg p-3">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function switchTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const loginTab = document.getElementById('tab-login');
+            const signupTab = document.getElementById('tab-signup');
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                loginTab.classList.add('border-primary', 'text-primary');
+                loginTab.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+                signupTab.classList.remove('border-primary', 'text-primary');
+                signupTab.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                signupTab.classList.add('border-primary', 'text-primary');
+                signupTab.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+                loginTab.classList.remove('border-primary', 'text-primary');
+                loginTab.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+            }
+        }
+        function redirectToMap() {
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+
+</html>
