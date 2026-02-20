@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Smart Risk-Aware Routing</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+    <!-- Mapbox CSS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+
+    <style>
+        .suggestions {
+            background: white;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+        }
+
+        .suggestion-item {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background: #f0f0f0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 1;
+            width: 300px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            margin-top: 8px;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <div class="controls">
+        <h3>Smart Routing</h3>
+        <input type="text" id="start" placeholder="Start location" autocomplete="off">
+        <div id="start-suggestions" class="suggestions"></div>
+
+        <input type="text" id="end" placeholder="Destination" autocomplete="off">
+        <div id="end-suggestions" class="suggestions"></div>
+        <button onclick="getRoutes()">Find Routes</button>
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </div>
+
+    <!-- Mapbox JS -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+    <script>
+
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic2lkZGhhbnRiYW5zb2QiLCJhIjoiY21raWJ5amo2MHI3cjNlcXhwY2RmZHlhNiJ9.AmRwXlI_MuxXn7x2PR7IAg';
+
+        // Initialize Map
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [77.2090, 28.6139],
+            zoom: 11
+        });
+        function add3DBuildings() {
+
+            const layers = map.getStyle().layers;
+
+            // Find first symbol layer
+            let labelLayerId;
+            for (const layer of layers) {
+                if (layer.type === 'symbol' && layer.layout['text-field']) {
+                    labelLayerId = layer.id;
+                    break;
+                }
+            }
+
+            map.addLayer(
+                {
+                    'id': '3d-buildings',
+                    'source': 'composite',
+                    'source-layer': 'building',
+                    'filter': ['==', 'extrude', 'true'],
+                    'type': 'fill-extrusion',
+                    'minzoom': 15,
+                    'paint': {
+                        'fill-extrusion-color': '#aaa',
+                        'fill-extrusion-height': ['get', 'height'],
+                        'fill-extrusion-base': ['get', 'min_height'],
+                        'fill-extrusion-opacity': 0.6
+                    }
+                },
+                labelLayerId
+            );
+        }
+        map.addControl(new mapboxgl.NavigationControl());
+        map.setPitch(60);
+        map.setBearing(-20);
+        map.on('load', () => {
+            add3DBuildings();
+        });
+        map.easeTo({
+            pitch: 60,
+            bearing: -20,
+            duration: 2000
+        });
+
+        // ✅ AUTO DETECT USER LOCATION
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const userCoords = [
+                    position.coords.longitude,
+                    position.coords.latitude
+                ];
+
+                map.setCenter(userCoords);
+                map.setZoom(13);
+
+                new mapboxgl.Marker({ color: "blue" })
+                    .setLngLat(userCoords)
+                    .addTo(map);
+
+                // Auto-fill start location
+                window.startCoords = userCoords;
+            });
+        }
+
+       async function getRoutes() {
+
+    const startCoords = window.startCoords;
+    const endCoords = window.endCoords;
+
+    if (!startCoords || !endCoords) {
+        alert("Select both locations.");
+        return;
+    }
+
+    const routeRes = await fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/driving/` +
+        `${startCoords[0]},${startCoords[1]};` +
+        `${endCoords[0]},${endCoords[1]}` +
+        `?alternatives=true&geometries=geojson&access_token=${mapboxgl.accessToken}`
+    );
+
+    const routeData = await routeRes.json();
+    const routes = routeData.routes;
+
+    if (routes.length < 1) {
+        alert("No routes found.");
+        return;
+    }
+
+    // Remove old layers
+    ["shortest", "safe"].forEach(id => {
+        if (map.getSource(id)) {
+            map.removeLayer(id);
+            map.removeSource(id);
+        }
+    });
+
+    // Evaluate risk for each route
+    let risks = [];
+
+    for (let i = 0; i < routes.length; i++) {
+
+        const riskRes = await fetch("http://127.0.0.1:8000/safe-route", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                coordinates: routes[i].geometry.coordinates,
+                rain_intensity: 0.3,
+                visibility_score: 0.8
+            })
+        });
+
+        const riskData = await riskRes.json();
+        risks.push({
+            index: i,
+            risk: riskData.average_risk
+        });
+    }
+
+    // Sort by risk
+    risks.sort((a, b) => a.risk - b.risk);
+
+    const safestIndex = risks[0].index;
+    const shortestIndex = 0;
+
+    // Draw shortest (blue)
+    map.addSource("shortest", {
+        type: "geojson",
+        data: {
+            type: "Feature",
+            geometry: routes[shortestIndex].geometry
+        }
+    });
+
+    map.addLayer({
+        id: "shortest",
+        type: "line",
+        source: "shortest",
+        paint: {
+            "line-color": "#007bff",
+            "line-width": 6
+        }
+    });
+
+    // Draw safest (green)
+    map.addSource("safe", {
+        type: "geojson",
+        data: {
+            type: "Feature",
+            geometry: routes[safestIndex].geometry
+        }
+    });
+
+    map.addLayer({
+        id: "safe",
+        type: "line",
+        source: "safe",
+        paint: {
+            "line-color": "#00c853",
+            "line-width": 6
+        }
+    });
+
+    const bounds = new mapboxgl.LngLatBounds();
+    routes[shortestIndex].geometry.coordinates.forEach(coord => bounds.extend(coord));
+    map.fitBounds(bounds, { padding: 50 });
+
+    alert("Safest route risk score: " + risks[0].risk.toFixed(3));
+}
+
+        // ✅ AUTOCOMPLETE FUNCTION (Allow Localities Like Vashi)
+        async function fetchSuggestions(query, containerId, inputId) {
+
+            if (query.length < 2) {
+                document.getElementById(containerId).innerHTML = "";
+                return;
+            }
+
+            const response = await fetch(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?` +
+                `autocomplete=true&limit=5&types=place,locality,neighborhood&country=IN&access_token=${mapboxgl.accessToken}`
+            );
+
+            const data = await response.json();
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+
+            data.features.forEach(place => {
+
+                const div = document.createElement("div");
+                div.className = "suggestion-item";
+                div.innerText = place.text;
+
+                div.onclick = () => {
+                    document.getElementById(inputId).value = place.text;
+                    container.innerHTML = "";
+
+                    window[inputId + "Coords"] = place.center;
+                };
+
+                container.appendChild(div);
+            });
+        }
+
+        // Event Listeners
+        document.getElementById("start").addEventListener("input", function () {
+            fetchSuggestions(this.value, "start-suggestions", "start");
+        });
+
+        document.getElementById("end").addEventListener("input", function () {
+            fetchSuggestions(this.value, "end-suggestions", "end");
+        });
+
+        let isDark = false;
+
+        function toggleDarkMode() {
+            if (isDark) {
+                map.setStyle('mapbox://styles/mapbox/streets-v12');
+            } else {
+                map.setStyle('mapbox://styles/mapbox/dark-v11');
+            }
+
+            isDark = !isDark;
+
+            // Re-add 3D buildings after style change
+            map.once('style.load', add3DBuildings);
+        }
+    </script>
+
+</body>
+
+</html>
