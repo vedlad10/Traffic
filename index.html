@@ -11,295 +11,464 @@
 
     <style>
         :root {
-    --primary: #f59e0b;        /* Amber */
-    --primary-dark: #d97706;
-    --bg: #0f1115;             /* Deep charcoal */
-    --panel: rgba(24, 24, 27, 0.9);
-    --border: rgba(255, 255, 255, 0.08);
-    --text: #f9fafb;
-    --muted: #9ca3af;
-}
+            --primary: #f59e0b;
+            /* Amber */
+            --primary-dark: #d97706;
+            --bg: #0f1115;
+            /* Deep charcoal */
+            --panel: rgba(24, 24, 27, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f9fafb;
+            --muted: #9ca3af;
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Inter", Arial, sans-serif;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", Arial, sans-serif;
+        }
 
-body {
-    display: flex;
-    height: 100vh;
-    background: var(--bg);
-    color: var(--text);
-    overflow: hidden;
-}
+        body {
+            display: flex;
+            height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
 
-/* ===== LEFT DASHBOARD ===== */
+        /* ===== LEFT DASHBOARD ===== */
 
-.dashboard {
-    width: 420px;
-    background: var(--panel);
-    backdrop-filter: blur(18px);
-    border-right: 1px solid var(--border);
-    padding: 28px;
-    overflow-y: auto;
-    box-shadow: 8px 0 40px rgba(0,0,0,0.4);
-}
+        .dashboard {
+            width: 420px;
+            background: var(--panel);
+            backdrop-filter: blur(18px);
+            border-right: 1px solid var(--border);
+            padding: 28px;
+            overflow-y: auto;
+            box-shadow: 8px 0 40px rgba(0, 0, 0, 0.4);
+        }
 
-.dashboard h2 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 24px;
-    letter-spacing: -0.5px;
-}
+        .dashboard h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
 
-.input-group {
-    position: relative;
-    margin-bottom: 18px;
-}
+        .input-group {
+            position: relative;
+            margin-bottom: 18px;
+        }
 
-.input-group svg {
+        .input-group svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            fill: var(--muted);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 14px 14px 42px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #1c1f26;
+            color: var(--text);
+            font-size: 14px;
+            transition: all 0.25s ease;
+        }
+
+        #style-fade {
+            position: absolute;
+            inset: 0;
+            background: black;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 15;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        .pink {
+            background: #ff2d8d;
+        }
+
+        /* Buttons */
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.25s ease;
+            font-size: 14px;
+        }
+
+        button.primary {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(245, 158, 11, 0.5);
+        }
+
+        button.secondary {
+            background: #1f232b;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        button.secondary:hover {
+            background: #262b34;
+        }
+
+        .route-card.pink {
+            border-left: 4px solid #ff2d8d;
+            background: linear-gradient(135deg, rgba(255, 45, 141, 0.12), rgba(255, 45, 141, 0.05));
+        }
+
+        .route-card.pink .route-time {
+            color: #ff2d8d;
+        }
+
+        .route-card.pink .metric-box strong {
+            color: #ff2d8d;
+        }
+
+        .route-card.pink .safety-badge {
+            background: rgba(255, 45, 141, 0.15);
+            color: #ff2d8d;
+        }
+
+        /* Suggestions */
+
+        .suggestions {
+            background: #1c1f26;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            position: absolute;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .suggestion-item {
+            padding: 10px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        /* Route Cards */
+
+        .route-card {
+            border-radius: 16px;
+            padding: 18px;
+            margin-top: 20px;
+            background: #1c1f26;
+            border: 1px solid var(--border);
+            transition: 0.3s;
+        }
+
+        .route-card.blue {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .route-card.green {
+            border-left: 4px solid var(--primary);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(245, 158, 11, 0.03));
+        }
+
+        .route-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .route-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .route-time {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .safety-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-top: 6px;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--primary);
+        }
+
+        /* Metrics */
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .metric-box {
+            background: #15181d;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 11px;
+            border: 1px solid var(--border);
+        }
+
+        .metric-box strong {
+            display: block;
+            font-size: 14px;
+            margin-top: 6px;
+            color: var(--primary);
+        }
+
+        /* Risk Panel */
+
+        #risk-panel {
+            margin-top: 20px;
+            font-size: 12px;
+            background: #1c1f26;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        /* Map */
+
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            position: absolute;
+            inset: 0;
+        }
+
+        /* Legend */
+
+        .legend {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            padding: 14px 18px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            font-size: 13px;
+            border: 1px solid var(--border);
+        }
+
+        .legend div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .blue {
+            background: #3b82f6;
+        }
+
+        .green {
+            background: var(--primary);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #f59e0b;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 35px rgba(245, 158, 11, 0.4);
+        }
+
+        .theme-toggle svg {
+            transition: transform 0.4s ease, opacity 0.3s ease;
+        }
+
+        .ladies-toggle {
+            position: absolute;
+            top: 20px;
+            right: 80px;
+            /* left of dark toggle */
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #aaa;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+
+        .ladies-toggle.active {
+            background: rgba(255, 20, 147, 0.15);
+            color: #ff2d8d;
+            box-shadow: 0 0 20px rgba(255, 45, 141, 0.6);
+        }
+        .ask-ai-btn {
     position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    fill: var(--muted);
-}
-
-.input-group input {
-    width: 100%;
-    padding: 14px 14px 14px 42px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: #1c1f26;
-    color: var(--text);
-    font-size: 14px;
-    transition: all 0.25s ease;
-}
-
-.input-group input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
-}
-
-/* Buttons */
-
-button {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 12px;
-    transition: all 0.25s ease;
-    font-size: 14px;
-}
-
-button.primary {
+    bottom: 100px;
+    right: 24px;
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: #000;
-    box-shadow: 0 6px 20px rgba(245,158,11,0.3);
-}
-
-button.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(245,158,11,0.5);
-}
-
-button.secondary {
-    background: #1f232b;
-    color: var(--text);
-    border: 1px solid var(--border);
-}
-
-button.secondary:hover {
-    background: #262b34;
-}
-
-/* Suggestions */
-
-.suggestions {
-    background: #1c1f26;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    max-height: 200px;
-    overflow-y: auto;
-    position: absolute;
-    width: 100%;
-    z-index: 100;
-}
-
-.suggestion-item {
-    padding: 10px 14px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.suggestion-item:hover {
-    background: rgba(245,158,11,0.15);
-}
-
-/* Route Cards */
-
-.route-card {
-    border-radius: 16px;
-    padding: 18px;
-    margin-top: 20px;
-    background: #1c1f26;
-    border: 1px solid var(--border);
-    transition: 0.3s;
-}
-
-.route-card.blue {
-    border-left: 4px solid #3b82f6;
-}
-
-.route-card.green {
-    border-left: 4px solid var(--primary);
-    background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03));
-}
-
-.route-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.route-title {
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.route-time {
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--primary);
-}
-
-.safety-badge {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 6px;
-    margin-top: 6px;
-    background: rgba(245,158,11,0.15);
-    color: var(--primary);
-}
-
-/* Metrics */
-
-.metrics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 12px;
-}
-
-.metric-box {
-    background: #15181d;
-    padding: 12px;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 11px;
-    border: 1px solid var(--border);
-}
-
-.metric-box strong {
-    display: block;
-    font-size: 14px;
-    margin-top: 6px;
-    color: var(--primary);
-}
-
-/* Risk Panel */
-
-#risk-panel {
-    margin-top: 20px;
-    font-size: 12px;
-    background: #1c1f26;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    line-height: 1.6;
-    color: var(--muted);
-}
-
-/* Map */
-
-.map-container {
-    flex: 1;
-    position: relative;
-}
-
-#map {
-    position: absolute;
-    inset: 0;
-}
-
-/* Legend */
-
-.legend {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-    background: rgba(20,20,20,0.85);
-    backdrop-filter: blur(10px);
-    border-radius: 14px;
-    padding: 14px 18px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-    font-size: 13px;
-    border: 1px solid var(--border);
-}
-
-.legend div {
+    padding: 12px 18px;
+    border-radius: 30px;
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 6px;
-}
-
-.dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
-
-.blue { background: #3b82f6; }
-.green { background: var(--primary); }
-.theme-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(20, 20, 20, 0.85);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 700;
     cursor: pointer;
-    color: #f59e0b;
+    box-shadow: 0 8px 25px rgba(245,158,11,0.4);
+    z-index: 30;
+    transition: 0.3s ease;
+}
+
+.ask-ai-btn:hover {
+    transform: translateY(-3px);
+}
+
+.ask-ai-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+.ai-panel {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    bottom: 90px;
+    right: 24px;
+    width: 340px;
+    height: 420px;
+    background: rgba(24,24,27,0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-    transition: all 0.3s ease;
-    z-index: 20;
+    z-index: 40;
+    overflow: hidden;
 }
 
-.theme-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 10px 35px rgba(245,158,11,0.4);
+.ai-header {
+    padding: 14px;
+    font-weight: 700;
+    background: #1c1f26;
+    display: flex;
+    justify-content: space-between;
 }
 
-.theme-toggle svg {
-    transition: transform 0.4s ease, opacity 0.3s ease;
+.ai-messages {
+    flex: 1;
+    padding: 14px;
+    overflow-y: auto;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.msg {
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 85%;
+}
+
+.ai-msg {
+    background: #1f232b;
+    align-self: flex-start;
+}
+
+.user-msg {
+    background: #f59e0b;
+    color: #000;
+    align-self: flex-end;
+}
+
+.ai-input-area {
+    display: flex;
+    padding: 10px;
+    background: #1c1f26;
+    gap: 6px;
+}
+
+.ai-input-area input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #15181d;
+    color: #fff;
+}
+
+.ai-input-area button {
+    background: #f59e0b;
+    color: #000;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 600;
 }
     </style>
 </head>
@@ -317,7 +486,7 @@ button.secondary:hover {
             </svg>
             <input type="text" id="start" placeholder="Start location" autocomplete="off">
             <div id="start-suggestions" class="suggestions"></div>
-            
+
         </div>
 
         <div class="input-group">
@@ -339,17 +508,56 @@ button.secondary:hover {
 
     <div class="map-container">
         <div id="map"></div>
-        <div class="theme-toggle" onclick="toggleDarkMode()">
-    <svg id="theme-icon" viewBox="0 0 24 24" width="20" height="20">
-        <!-- Moon by default -->
-        <path fill="currentColor"
-            d="M21 12.79A9 9 0 0111.21 3c0-.34.02-.67.05-1A9 9 0 1022 13.74a7 7 0 01-1-.95z" />
+        <!-- Ask AI Floating Button -->
+<div class="ask-ai-btn" onclick="toggleAI()">
+    <svg viewBox="0 0 24 24">
+        <path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5z"/>
     </svg>
+    Ask AI
 </div>
+
+<!-- AI Chat Panel -->
+<div id="ai-chat-panel" class="ai-panel">
+    <div class="ai-header">
+        <span>Route Assistant</span>
+        <button class="close-btn" onclick="toggleAI()">✕</button>
+    </div>
+    <div id="ai-messages" class="ai-messages">
+        <div class="msg ai-msg">
+            Hello! Ask me anything about route safety.
+        </div>
+    </div>
+    <div class="ai-input-area">
+        <input type="text" id="ai-input"
+               placeholder="Type your question..."
+               onkeypress="handleAIKeyPress(event)">
+        <button onclick="sendToAI()">Send</button>
+    </div>
+</div>
+        <div class="theme-toggle" onclick="toggleDarkMode()">
+            <svg id="theme-icon" viewBox="0 0 24 24" width="20" height="20">
+                <!-- Moon by default -->
+                <path fill="currentColor"
+                    d="M21 12.79A9 9 0 0111.21 3c0-.34.02-.67.05-1A9 9 0 1022 13.74a7 7 0 01-1-.95z" />
+            </svg>
+        </div>
+        <div class="ladies-toggle" onclick="toggleLadiesMode()">
+            <svg id="ladies-icon" viewBox="0 0 24 24" width="20" height="20">
+                <path fill="currentColor"
+                    d="M12 2a5 5 0 015 5c0 3.03-2.17 4.44-4 5v2h2v2h-2v4h-2v-4H9v-2h2v-2c-1.83-.56-4-1.97-4-5a5 5 0 015-5z" />
+            </svg>
+        </div>
         <div id="style-fade"></div>
         <div class="legend">
             <div><span class="dot blue"></span> Shortest Route</div>
-            <div><span class="dot green"></span> Safest Route</div>
+
+            <div id="legend-safe">
+                <span class="dot green"></span> Safest Route
+            </div>
+
+            <div id="legend-ladies" style="display:none;">
+                <span class="dot pink"></span> Ultra Safe Route
+            </div>
         </div>
     </div>
 
@@ -469,6 +677,9 @@ button.secondary:hover {
 
             });
 
+            // EXTRA SAFETY: small delay to ensure removal completes
+            await new Promise(resolve => setTimeout(resolve, 50));
+
             let risks = [];
 
             // Evaluate each route properly
@@ -496,6 +707,37 @@ button.secondary:hover {
 
             const safest = risks[0];
             const shortestIndex = 0;
+            let ultraSafeIndex = null;
+
+            if (ladiesMode) {
+
+                const baseRoute = routes[safest.index];
+
+                if (map.getLayer("ultra-safe")) {
+                    map.removeLayer("ultra-safe");
+                    map.removeSource("ultra-safe");
+                }
+
+                // Draw safest route (Pink – Ladies Mode Style)
+                map.addSource("safe", {
+                    type: "geojson",
+                    data: {
+                        type: "Feature",
+                        geometry: routes[safest.index].geometry
+                    }
+                });
+
+                map.addLayer({
+                    id: "safe",
+                    type: "line",
+                    source: "safe",
+                    paint: {
+                        "line-color": ladiesMode ? "#ff2d8d" : "#00c853",
+                        "line-width": ladiesMode ? 8 : 6,
+                        "line-opacity": 0.9
+                    }
+                });
+            }
 
             const minRisk = Math.min(...risks.map(r => r.average_risk));
             const maxRisk = Math.max(...risks.map(r => r.average_risk));
@@ -521,7 +763,12 @@ button.secondary:hover {
                 );
 
                 const card = document.createElement("div");
-                card.className = `route-card ${colorClass}`;
+                const finalClass =
+                    ladiesMode && isSafest
+                        ? "pink"
+                        : colorClass;
+
+                card.className = `route-card ${finalClass}`;
 
                 card.innerHTML = `
         <div class="route-header">
@@ -559,7 +806,12 @@ button.secondary:hover {
             createRouteCard(shortestIndex, "blue", "Shortest Route");
 
             // Create Safest (Green)
-            createRouteCard(safest.index, "green", "Recommended Route", true);
+            createRouteCard(
+                safest.index,
+                ladiesMode ? "pink" : "green",
+                ladiesMode ? "Ultra Safe Route" : "Safest Route",
+                true
+            );
 
             // Draw shortest route (Blue)
             map.addSource("shortest", {
@@ -671,6 +923,7 @@ button.secondary:hover {
         });
 
         let isDark = false;
+        let ladiesMode = false;
 
         function addHeatmapLayer() {
 
@@ -723,61 +976,117 @@ button.secondary:hover {
 
                 });
         }
+        function toggleAI() {
+    const panel = document.getElementById("ai-chat-panel");
+    panel.style.display =
+        panel.style.display === "flex" ? "none" : "flex";
+}
 
-       function toggleDarkMode() {
+function handleAIKeyPress(e) {
+    if (e.key === "Enter") sendToAI();
+}
 
-    const fade = document.getElementById("style-fade");
-    const icon = document.getElementById("theme-icon");
+async function sendToAI() {
 
-    const center = map.getCenter();
-    const zoom = map.getZoom();
-    const pitch = map.getPitch();
-    const bearing = map.getBearing();
+    const inputField = document.getElementById("ai-input");
+    const text = inputField.value.trim();
+    if (!text) return;
 
-    fade.style.opacity = 1;
+    const messagesDiv = document.getElementById("ai-messages");
 
-    setTimeout(() => {
+    // Show user message
+    messagesDiv.innerHTML +=
+        `<div class="msg user-msg">${text}</div>`;
+    inputField.value = "";
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-        if (isDark) {
-            map.setStyle('mapbox://styles/mapbox/streets-v12');
+    // Show loading
+    const loadingId = "loading-" + Date.now();
+    messagesDiv.innerHTML +=
+        `<div id="${loadingId}" class="msg ai-msg">Thinking...</div>`;
 
-            // Switch to Moon icon
-            icon.innerHTML = `
+    try {
+
+        const response = await fetch("http://127.0.0.1:8000/ask-ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: text })
+        });
+
+        const data = await response.json();
+
+        document.getElementById(loadingId).remove();
+
+        messagesDiv.innerHTML +=
+            `<div class="msg ai-msg">${data.reply}</div>`;
+
+    } catch (err) {
+
+        document.getElementById(loadingId).remove();
+
+        messagesDiv.innerHTML +=
+            `<div class="msg ai-msg" style="color:#ef4444;">
+                Backend connection failed.
+             </div>`;
+    }
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+        function toggleDarkMode() {
+
+            const fade = document.getElementById("style-fade");
+            const icon = document.getElementById("theme-icon");
+
+            const center = map.getCenter();
+            const zoom = map.getZoom();
+            const pitch = map.getPitch();
+            const bearing = map.getBearing();
+
+            fade.style.opacity = 1;
+
+            setTimeout(() => {
+
+                if (isDark) {
+                    map.setStyle('mapbox://styles/mapbox/streets-v12');
+
+                    // Switch to Moon icon
+                    icon.innerHTML = `
                 <path fill="currentColor"
                 d="M21 12.79A9 9 0 0111.21 3c0-.34.02-.67.05-1A9 9 0 1022 13.74a7 7 0 01-1-.95z"/>
             `;
 
-        } else {
-            map.setStyle('mapbox://styles/mapbox/dark-v11');
+                } else {
+                    map.setStyle('mapbox://styles/mapbox/dark-v11');
 
-            // Switch to Sun icon
-            icon.innerHTML = `
+                    // Switch to Sun icon
+                    icon.innerHTML = `
                 <path fill="currentColor"
                 d="M6.76 4.84l-1.8-1.79-1.42 1.41 1.79 1.8 1.43-1.42zM1 13h3v-2H1v2zm10-9h2V1h-2v3zm7.66 2.05l1.79-1.8-1.41-1.41-1.8 1.79 1.42 1.42zM17 13h3v-2h-3v2zm-5 5h2v-3h-2v3zm-7.66-2.05l-1.79 1.8 1.41 1.41 1.8-1.79-1.42-1.42zM4 11H1v2h3v-2zm8 6a5 5 0 100-10 5 5 0 000 10z"/>
             `;
+                }
+
+                isDark = !isDark;
+
+                map.once('style.load', () => {
+
+                    map.easeTo({
+                        center,
+                        zoom,
+                        pitch,
+                        bearing
+                    });
+
+                    add3DBuildings();
+                    addHeatmapLayer();
+
+                    setTimeout(() => {
+                        fade.style.opacity = 0;
+                    }, 150);
+                });
+
+            }, 200);
         }
-
-        isDark = !isDark;
-
-        map.once('style.load', () => {
-
-            map.easeTo({
-                center,
-                zoom,
-                pitch,
-                bearing
-            });
-
-            add3DBuildings();
-            addHeatmapLayer();
-
-            setTimeout(() => {
-                fade.style.opacity = 0;
-            }, 150);
-        });
-
-    }, 200);
-}
         let heatVisible = true;
 
         function toggleHeatmap() {
@@ -791,6 +1100,17 @@ button.secondary:hover {
             } else {
                 map.setLayoutProperty("accident-heat", "visibility", "none");
             }
+        }
+        function toggleLadiesMode() {
+
+            ladiesMode = !ladiesMode;
+
+            const btn = document.querySelector(".ladies-toggle");
+            const legendSafe = document.getElementById("legend-safe");
+            const legendLadies = document.getElementById("legend-ladies");
+
+            // Recalculate routes so color updates
+            getRoutes();
         }
     </script>
 
