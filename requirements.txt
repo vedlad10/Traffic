@@ -1,9 +1,11 @@
 streamlit
-tensorflow
-keras
-opencv-python-headless
+langchain
+langchain-community
+openai
+faiss-cpu
+sentence-transformers
+pypdf
 numpy
-pillow
-matplotlib
-scikit-learn
 pandas
+scikit-learn
+python-dotenv
